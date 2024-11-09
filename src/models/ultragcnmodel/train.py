@@ -157,7 +157,7 @@ class UltraGCNTrainer:
             neg_items = np.concatenate(neg_items, axis=0)
         else:
             neg_items = np.random.choice(neg_candidates,
-                                         (pos_train_data[0].numel(), neg_ratio),
+                                         (len(pos_train_data[0]), neg_ratio),
                                          replace=True)
             
         neg_items = torch.from_numpy(neg_items)
