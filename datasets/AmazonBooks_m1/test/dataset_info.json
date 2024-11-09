@@ -1,0 +1,47 @@
+{
+  "builder_name": "text",
+  "citation": "",
+  "config_name": "reczoo--AmazonBooks_m1",
+  "dataset_size": 18290160,
+  "description": "",
+  "download_checksums": {
+    "https://huggingface.co/datasets/reczoo/AmazonBooks_m1/resolve/69008aca172fea74b441667e759213a4c0591a4e/train.txt": {
+      "num_bytes": 14125691,
+      "checksum": null
+    },
+    "https://huggingface.co/datasets/reczoo/AmazonBooks_m1/resolve/69008aca172fea74b441667e759213a4c0591a4e/test.txt": {
+      "num_bytes": 3848611,
+      "checksum": null
+    }
+  },
+  "download_size": 17974302,
+  "features": {
+    "text": {
+      "dtype": "string",
+      "_type": "Value"
+    }
+  },
+  "homepage": "",
+  "license": "",
+  "size_in_bytes": 36264462,
+  "splits": {
+    "train": {
+      "name": "train",
+      "num_bytes": 14283620,
+      "num_examples": 52643,
+      "dataset_name": "text"
+    },
+    "test": {
+      "name": "test",
+      "num_bytes": 4006540,
+      "num_examples": 52643,
+      "dataset_name": "text"
+    }
+  },
+  "version": {
+    "version_str": "0.0.0",
+    "major": 0,
+    "minor": 0,
+    "patch": 0
+  }
+}
