@@ -40,7 +40,7 @@ def main(config_file):
     seed = config.getint('Training', 'seed')
     set_random_seed(seed=seed, device=device)
 
-    param = {
+    hyper_param = {
         'model': config['Model']['model'],
         'seed': seed,
         'device': device
