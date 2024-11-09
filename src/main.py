@@ -114,7 +114,7 @@ def main(config_file):
         for (u, i) in test_data:
             test_ground_truth_list[u].append(i)
         hyper_param['test_ground_truth_list'] = test_ground_truth_list
-        log_param(hyper_param)
+        # log_param(hyper_param)
         model = run_ultragcn(device=device, train_data=train_data, hyper_param=hyper_param, ii_constraint_mat=ii_constraint_mat, ii_neighbor_mat=ii_neighbor_mat)
 
     else:
