@@ -96,6 +96,7 @@ def main(config_file):
             'topk': config.getint('Testing', 'topk'),
             'constraint_mat': constraint_mat
         }
+        print(hyper_param['sampling_sift_pos'])
         if os.path.exists('../{}_ii_constraint_mat'.format(dataset)):
             ii_constraint_mat = pload('../{}_ii_constraint_mat'.format(dataset))
             ii_neighbor_mat = pload('../{}_ii_neighbor_mat'.format(dataset))
