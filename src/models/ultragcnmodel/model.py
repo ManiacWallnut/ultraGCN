@@ -52,18 +52,21 @@ class UltraGCN(torch.nn.Module):
 
     def get_omegas(self, users, pos_items, neg_items):
         device = self.get_device()
+
+        # constraint_mat의 'beta_uD'와 'beta_iD'를 users와 동일한 디바이스로 이동
+        beta_uD = self.constraint_mat['beta_uD'].to(device)
+        beta_iD = self.constraint_mat['beta_iD'].to(device)
+
         if self.w2 > 0:
-            pos_weight = torch.mul(self.constraint_mat['beta_uD'][users],
-                                   self.constraint_mat['beta_iD'][pos_items]).to(device)
+            pos_weight = torch.mul(beta_uD[users], beta_iD[pos_items])
             pos_weight = self.w1 + self.w2 * pos_weight
         else:
             pos_weight = self.w1 * torch.ones(len(pos_items)).to(device)
         
         # users = (users * self.item_num).unsqueeze(0)
         if self.w4 > 0:
-            neg_weight = torch.mul(torch.repeat_interleave(self.constraint_mat['beta_uD'][users],
-                                                           neg_items.size(1)),
-                                   self.constraint_mat['beta_iD'][neg_items.flatten()]).to(device)
+            neg_weight = torch.mul(torch.repeat_interleave(beta_uD[users], neg_items.size(1)),
+                                   beta_iD[neg_items.flatten()]).to(device)
             neg_weight = self.w3 + self.w4 * neg_weight
         else:
             neg_weight = self.w3 * torch.ones(neg_items.size(0) * neg_items.size(1)).to(device)
