@@ -23,6 +23,7 @@ class UltraGCNTrainer:
     def train_with_hyper_param(self, 
                                train_data, 
                                hyper_param,
+                               constraint_mat,
                                ii_constraint_mat,
                                ii_neighbor_mat, 
                                verbose=False):
@@ -44,7 +45,7 @@ class UltraGCNTrainer:
         if hyper_param['enable_tensorboard']:
             writer = SummaryWriter()
         
-        ultragcn = UltraGCN(hyper_param, ii_constraint_mat, ii_neighbor_mat).to(self.device)
+        ultragcn = UltraGCN(hyper_param, constraint_mat, ii_constraint_mat, ii_neighbor_mat).to(self.device)
         optimizer = torch.optim.Adam(ultragcn.parameters(), lr=learning_rate)
 
         # pbar = tqdm(range(hyper_param['epochs']), leave=False, colour='green', desc='epoch')

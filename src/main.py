@@ -25,9 +25,14 @@ def run_mymodel(device, train_data, test_data, hyper_param):
     accuracy = evaluator.evaluate(model, test_data)
     return accuracy
 
-def run_ultragcn(device, train_data, hyper_param, ii_constraint_mat, ii_neighbor_mat):
+def run_ultragcn(device, train_data, hyper_param, constraint_mat, ii_constraint_mat, ii_neighbor_mat):
     trainer = UltraGCNTrainer(device)
-    model = trainer.train_with_hyper_param(train_data=train_data, hyper_param=hyper_param, ii_constraint_mat=ii_constraint_mat, ii_neighbor_mat=ii_neighbor_mat, verbose=True)
+    model = trainer.train_with_hyper_param(train_data=train_data, 
+                                           hyper_param=hyper_param, 
+                                           constraint_mat=constraint_mat,
+                                           ii_constraint_mat=ii_constraint_mat, 
+                                           ii_neighbor_mat=ii_neighbor_mat, 
+                                           verbose=True)
     return model
 
 def main(config_file):
@@ -115,7 +120,7 @@ def main(config_file):
             test_ground_truth_list[u].append(i)
         hyper_param['test_ground_truth_list'] = test_ground_truth_list
         # log_param(hyper_param)
-        model = run_ultragcn(device=device, train_data=train_data, hyper_param=hyper_param, ii_constraint_mat=ii_constraint_mat, ii_neighbor_mat=ii_neighbor_mat)
+        model = run_ultragcn(device=device, train_data=train_data, hyper_param=hyper_param, constraint_mat=constraint_mat, ii_constraint_mat=ii_constraint_mat, ii_neighbor_mat=ii_neighbor_mat)
 
     else:
         logger.error("The given \"{}\" is not supported...".format(param['model']))
