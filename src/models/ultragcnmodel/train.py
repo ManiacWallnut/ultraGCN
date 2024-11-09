@@ -132,7 +132,8 @@ class UltraGCNTrainer:
 
         return ultragcn
 
-    def Sampling(pos_train_data, 
+    def Sampling(self,
+                 pos_train_data, 
                  item_num, 
                  neg_ratio, 
                  interacted_items,
