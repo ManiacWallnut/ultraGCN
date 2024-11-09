@@ -48,13 +48,16 @@ class UltraGCNTrainer:
         optimizer = torch.optim.Adam(ultragcn.parameters(), lr=learning_rate)
 
         pbar = tqdm(range(hyper_param['epochs']), leave=False, colour='green', desc='epoch')
-        for epoch in pbar:
+
+        # for epoch in pbar:
+        for epoch in range(hyper_param['max_epoch']):
             avg_loss = 0
             ultragcn.train()
             start_time = time.time()
 
             # x: tensor:[users, pos_items]
-            for batch, x in tqdm(train_loader, leave=False, colour='red', desc='batch'):
+            # for batch, x in tqdm(train_loader, leave=False, colour='red', desc='batch'):
+            for batch, x in enumerate(train_loader):
                 users, pos_items, neg_items = self.Sampling(x,
                                                             hyper_param['item_num'],
                                                             hyper_param['negative_num'],
