@@ -28,7 +28,7 @@ class UltraGCNTrainer:
                                verbose=False):
 
         batch_size = hyper_param['batch_size']
-        epochs = hyper_param['epochs']
+        epochs = hyper_param['max_epoch']
         learning_rate = hyper_param['learning_rate']
 
         train_loader = torch.utils.data.DataLoader(train_data,
