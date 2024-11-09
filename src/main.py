@@ -59,7 +59,7 @@ def main(config_file):
         logger.info("- # of test instances: {}".format(len(test_data)))
         hyper_param = {
             'batch_size': config.getint('Training', 'batch_size'),
-            'epochs': config.getint('Model', 'max_epoch'),
+            'max_epoch': config.getint('Model', 'max_epoch'),
             'learning_rate': config.getfloat('Training', 'learning_rate')
         }
         log_param(hyper_param)
@@ -75,7 +75,7 @@ def main(config_file):
             'user_num': user_num,
             'item_num': item_num,
             'batch_size': config.getint('Training', 'batch_size'),
-            'epochs': config.getint('Model', 'max_epoch'),
+            'max_epoch': config.getint('Model', 'max_epoch'),
             'learning_rate': config.getfloat('Training', 'learning_rate'),
             'embedding_dim': config.getint('Model', 'embedding_dim'),
             'ii_neighbor_num': config.getint('Model', 'ii_neighbor_num'),
