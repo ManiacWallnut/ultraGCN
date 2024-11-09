@@ -29,7 +29,7 @@ class UltraGCN(torch.nn.Module):
         self.user_embeds = torch.nn.Embedding(self.user_num, self.embedding_dim)
         self.item_embeds = torch.nn.Embedding(self.item_num, self.embedding_dim)
 
-        self.constraint_mat = hyper_param['constraint_mat'].to(self.get_device())
+        self.constraint_mat = hyper_param['constraint_mat']
         self.ii_constraint_mat = ii_constraint_mat.to(self.get_device())
         self.ii_neighbor_mat = ii_neighbor_mat.to(self.get_device())
 
