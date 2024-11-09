@@ -45,13 +45,13 @@ def main(config_file):
         'seed': seed,
         'device': device
     }
-    log_param(param)
+    log_param(hyper_param)
 
     dataset = config['Training']['dataset']
     # data_path = Path(__file__).parents[1].absolute().joinpath("datasets")
     data_path = config['Training']['file_path']
     
-    if param['model'] == 'mymodel':
+    if hyper_param['model'] == 'mymodel':
         train_data = MyDataset(data_path=data_path, train=True)
         test_data = MyDataset(data_path=data_path, train=False)
         logger.info("The datasets are loaded where their statistics are as follows:")
@@ -65,7 +65,7 @@ def main(config_file):
         log_param(hyper_param)
         accuracy = run_mymodel(device=device, train_data=train_data, test_data=test_data, hyper_param=hyper_param)
 
-    elif param['model'] == 'ultragcn':
+    elif hyper_param['model'] == 'ultragcn':
         train_data = UltraDataset(data_path=data_path, train=True)
         test_data = UltraDataset(data_path=data_path, train=False)
         train_mat = train_data.get_train_matrix()
