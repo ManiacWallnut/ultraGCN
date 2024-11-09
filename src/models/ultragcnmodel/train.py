@@ -47,7 +47,7 @@ class UltraGCNTrainer:
         ultragcn = UltraGCN(hyper_param, ii_constraint_mat, ii_neighbor_mat).to(self.device)
         optimizer = torch.optim.Adam(ultragcn.parameters(), lr=learning_rate)
 
-        pbar = tqdm(range(hyper_param['epochs']), leave=False, colour='green', desc='epoch')
+        # pbar = tqdm(range(hyper_param['epochs']), leave=False, colour='green', desc='epoch')
 
         # for epoch in pbar:
         for epoch in range(hyper_param['max_epoch']):
@@ -80,8 +80,8 @@ class UltraGCNTrainer:
             if hyper_param['enable_tensorboard']:
                 writer.add_scalar('Loss/train', loss, epoch)
 
-            if verbose:
-                pbar.write('Epoch {:02}: {:.4} training loss'.format(epoch, loss.item()))
+            # if verbose:
+            #     pbar.write('Epoch {:02}: {:.4} training loss'.format(epoch, loss.item()))
 
             need_test = True
             if epoch < 50 and epoch % 5 != 0:
@@ -129,7 +129,7 @@ class UltraGCNTrainer:
                 break
 
         writer.flush()
-        pbar.close()
+        # pbar.close()
 
         print('Training end!')
 
