@@ -29,9 +29,9 @@ class UltraGCN(torch.nn.Module):
         self.user_embeds = torch.nn.Embedding(self.user_num, self.embedding_dim)
         self.item_embeds = torch.nn.Embedding(self.item_num, self.embedding_dim)
 
-        self.constraint_mat = hyper_param['constraint_mat']
-        self.ii_constraint_mat = ii_constraint_mat
-        self.ii_neighbor_mat = ii_neighbor_mat
+        self.constraint_mat = hyper_param['constraint_mat'].to(self.get_device())
+        self.ii_constraint_mat = ii_constraint_mat.to(self.get_device())
+        self.ii_neighbor_mat = ii_neighbor_mat.to(self.get_device())
 
         # self.constraint_mat = self.constraint_mat.to(device)
         # self.ii_constraint_mat = self.ii_constraint_mat.to(device)
@@ -107,8 +107,10 @@ class UltraGCN(torch.nn.Module):
     def cal_loss_I(self, users, pos_items):
         device = self.get_device()
 
+        ii_neighbor_mat = self.ii_neighbor_mat.to(device)
+
         # len(pos_items) * num_neighbors * dim
-        neighbor_embeds = self.item_embeds(self.ii_neighbor_mat[pos_items].to(device))
+        neighbor_embeds = self.item_embeds(ii_neighbor_mat[pos_items])
 
         # len(pos_items) * num_neighbors
         sim_scores = self.ii_constraint_mat[pos_items].to(device)
