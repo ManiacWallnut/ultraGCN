@@ -98,6 +98,8 @@ class UltraGCN(torch.nn.Module):
     def cal_loss_I(self, users, pos_items):
         device = self.get_device()
 
+        pos_items = pos_items.to(device)
+
         # ii_neighbor_mat과 ii_constraint_mat은 이미 GPU로 이동했으므로 to(device) 호출을 제거
         neighbor_embeds = self.item_embeds(self.ii_neighbor_mat[pos_items])
 
