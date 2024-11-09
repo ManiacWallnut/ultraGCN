@@ -33,9 +33,9 @@ class UltraGCN(torch.nn.Module):
         self.ii_constraint_mat = ii_constraint_mat
         self.ii_neighbor_mat = ii_neighbor_mat
 
-        self.constraint_mat = self.constraint_mat.to(device)
-        self.ii_constraint_mat = self.ii_constraint_mat.to(device)
-        self.ii_neighbor_mat = self.ii_neighbor_mat.to(device)
+        # self.constraint_mat = self.constraint_mat.to(device)
+        # self.ii_constraint_mat = self.ii_constraint_mat.to(device)
+        # self.ii_neighbor_mat = self.ii_neighbor_mat.to(device)
 
 
         self.initial_weight = hyper_param['initial_weight']
