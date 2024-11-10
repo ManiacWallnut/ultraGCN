@@ -26,7 +26,7 @@ def test(model,
             _, rating_K = torch.topk(rating, k=topk)
             rating_list.append(rating_K)
 
-            groundTrue_list.append(test_ground_truth_list[u] for u in batch_users)
+            groundTrue_list.append([test_ground_truth_list[u] for u in batch_users])
 
     X = zip(rating_list, groundTrue_list)
     Recall, Precision, NDCG = 0, 0, 0
