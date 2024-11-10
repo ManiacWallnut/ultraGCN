@@ -134,7 +134,7 @@ class UltraGCNTrainer:
 
         print('Training end!')
 
-        return ultragcn
+        return self.best_epoch, self.best_recall, self.best_ndcg
 
     def Sampling(self,
                  pos_train_data, 
