@@ -21,7 +21,7 @@ def test(model,
             batch_users = batch_users.to(model.get_device())
             rating = model.test_forward(batch_users)
             rating = rating.cpu()
-            rating += mask[batch_users]
+            rating += mask[batch_users.cpu()]
 
             _, rating_K = torch.topk(rating, k=topk)
             rating_list.append(rating_K)

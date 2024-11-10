@@ -38,14 +38,14 @@ class UltraGCN(nn.Module):
     def get_omegas(self, users, pos_items, neg_items):
         device = self.get_device()
         if self.w2 > 0:
-            pos_weight = torch.mul(self.constraint_mat['beta_uD'][users], self.constraint_mat['beta_iD'][pos_items]).to(device)
+            pos_weight = torch.mul(self.constraint_mat['beta_uD'][users.cpu()], self.constraint_mat['beta_iD'][pos_items.cpu()]).to(device)
             pos_weight = self.w1 + self.w2 * pos_weight
         else:
             pos_weight = self.w1 * torch.ones(len(pos_items)).to(device)
         
         # users = (users * self.item_num).unsqueeze(0)
         if self.w4 > 0:
-            neg_weight = torch.mul(torch.repeat_interleave(self.constraint_mat['beta_uD'][users], neg_items.size(1)), self.constraint_mat['beta_iD'][neg_items.flatten()]).to(device)
+            neg_weight = torch.mul(torch.repeat_interleave(self.constraint_mat['beta_uD'][users.cpu()], neg_items.size(1)), self.constraint_mat['beta_iD'][neg_items.cpu().flatten()]).to(device)
             neg_weight = self.w3 + self.w4 * neg_weight
         else:
             neg_weight = self.w3 * torch.ones(neg_items.size(0) * neg_items.size(1)).to(device)
@@ -76,8 +76,8 @@ class UltraGCN(nn.Module):
 
     def cal_loss_I(self, users, pos_items):
         device = self.get_device()
-        neighbor_embeds = self.item_embeds(self.ii_neighbor_mat[pos_items].to(device))    # len(pos_items) * num_neighbors * dim
-        sim_scores = self.ii_constraint_mat[pos_items].to(device)     # len(pos_items) * num_neighbors
+        neighbor_embeds = self.item_embeds(self.ii_neighbor_mat[pos_items.cpu()].to(device))    # len(pos_items) * num_neighbors * dim
+        sim_scores = self.ii_constraint_mat[pos_items.cpu()].to(device)     # len(pos_items) * num_neighbors
         user_embeds = self.user_embeds(users).unsqueeze(1)
         
         loss = -sim_scores * (user_embeds * neighbor_embeds).sum(dim=-1).sigmoid().log()
