@@ -99,7 +99,7 @@ class UltraGCN(nn.Module):
         loss += self.lambda_ * self.cal_loss_I(users, pos_items)
         return loss
 
-    def test_foward(self, users):
+    def test_forward(self, users):
         items = torch.arange(self.item_num).to(users.device)
         user_embeds = self.user_embeds(users)
         item_embeds = self.item_embeds(items)
