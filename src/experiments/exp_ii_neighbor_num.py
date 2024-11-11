@@ -15,6 +15,7 @@ import numpy as np
 from ultra_data import UltraDataset
 from utils import pload, pstore, get_ii_constraint_mat
 from models.ultragcnmodel.train import UltraGCNTrainer
+import fire
 
 
 # check the effect of the ii_neighbor_num
@@ -126,6 +127,4 @@ def main(config_file):
 
 
 if __name__ == "__main__":
-    # config_file 인자 지정 없을 시 기본값 설정
-    config_file = sys.argv[1]
-    main(config_file)
+    fire.Fire(main)
