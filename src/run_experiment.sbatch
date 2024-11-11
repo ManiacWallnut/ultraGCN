@@ -9,5 +9,5 @@ mkdir -p $slurm_dir
 hostname
 #conda activate UltraGCN
 
-echo "Starting experiment for ii_neighbor_num_param using config file ../../config/ultragcn_amazonbooks_m1_hyper_param.ini..." | tee -a $log_file
-python -m experiments.exp_ii_neighbor_num --config_file ../../config/ultragcn_amazonbooks_m1_hyper_param.ini | tee -a $log_file
+echo "Starting experiment for ii_neighbor_num_param using config file ../config/ultragcn_amazonbooks_m1_hyper_param.ini..." | tee -a $log_file
+python -m experiments.exp_ii_neighbor_num --config_file ../config/ultragcn_amazonbooks_m1_hyper_param.ini | tee -a $log_file
