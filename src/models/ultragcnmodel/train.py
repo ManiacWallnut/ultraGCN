@@ -108,7 +108,8 @@ class UltraGCNTrainer:
                 test_time = time.strftime('%H:%M:%S', time.gmtime(time.time() - start_time))
 
                 print('The time for epoch {} is: train time = {}, test time = {}'.format(epoch, train_time, test_time))
-                print("Loss = {:.4f}, F1-score: {:.4f} \t Precision: {:.4f}\t Recall: {:.4f}\tNDCG: {:.4f}".format(loss.item(), F1_score, Precision, Recall, NDCG))
+                # print("Loss = {:.4f}, F1-score: {:.4f} \t Precision: {:.4f}\t Recall: {:.4f}\tNDCG: {:.4f}".format(loss.item(), F1_score, Precision, Recall, NDCG))
+                print("Loss = {}, F1-score: {} \t Precision: {}\t Recall: {}\tNDCG: {}".format(loss.item(), F1_score, Precision, Recall, NDCG))
 
                 if early_stop_metric == 'recall':
                     metric = Recall
