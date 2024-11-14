@@ -136,8 +136,7 @@ def main(config_file,
                             'mask': mask})
 
         if tuning:
-            valid_data = train_data.get_validation_data()
-            valid_ground_truth_list = valid_data.get_valid_ground_truth_list()
+            valid_ground_truth_list = train_data.get_valid_ground_truth_list()
             hyper_param['test_ground_truth_list'] = valid_ground_truth_list
         else:
             test_ground_truth_list = test_data.get_test_ground_truth_list()
