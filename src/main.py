@@ -137,12 +137,12 @@ def main(config_file,
         hyper_param['test_ground_truth_list'] = test_ground_truth_list
 
         best_epoch, best_metric = run_ultragcn(device=device, 
-                                                          train_data=train_data, 
-                                                          hyper_param=hyper_param, 
-                                                          constraint_mat=constraint_mat, 
-                                                          ii_constraint_mat=ii_constraint_mat, 
-                                                          ii_neighbor_mat=ii_neighbor_mat,
-                                                          early_stop_metric=early_stop_metric)
+                                               train_data=train_data, 
+                                               hyper_param=hyper_param, 
+                                               constraint_mat=constraint_mat, 
+                                               ii_constraint_mat=ii_constraint_mat, 
+                                               ii_neighbor_mat=ii_neighbor_mat,
+                                               early_stop_metric=early_stop_metric)
 
     else:
         logger.error("The given \"{}\" is not supported...".format(hyper_param['model']))
