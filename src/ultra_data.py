@@ -1,15 +1,3 @@
-# #!/usr/bin/env python
-# # -*- coding: utf-8 -*-
-
-import numpy as np
-import scipy.sparse as sp
-import torch
-from torch.utils.data import Dataset
-import warnings
-import random
-
-warnings.filterwarnings("ignore")
-
 class UltraDataset(Dataset):
     def __init__(self, data_path, train=True, validation_split=0.1):
         # Initialize dataset parameters
@@ -93,15 +81,15 @@ class UltraDataset(Dataset):
             for (u, i) in self.valid_data:
                 self.valid_ground_truth_list[u].append(i)
 
-            # For test data, also compute interacted_items and mask
+        # Initialize test data if not in training mode
+        if not self.train:
             self.test_interacted_items = [[] for _ in range(self.n_user)]
-            if not self.train:
-                for (u, i) in self.data:
-                    self.test_interacted_items[u].append(i)
+            for (u, i) in self.data:
+                self.test_interacted_items[u].append(i)
 
-                self.test_ground_truth_list = [[] for _ in range(self.n_user)]
-                for (u, i) in self.valid_data:
-                    self.test_ground_truth_list[u].append(i)
+            self.test_ground_truth_list = [[] for _ in range(self.n_user)]
+            for (u, i) in self.data:  # 기존 valid_data에서 data로 수정
+                self.test_ground_truth_list[u].append(i)
 
     def _split_train_valid(self, validation_split):
         # Shuffle data and split 10% for validation
@@ -137,8 +125,11 @@ class UltraDataset(Dataset):
             return self.test_interacted_items, self.mask
         
     def get_test_ground_truth_list(self):
+        if not self.train and not hasattr(self, 'test_ground_truth_list'):
+            self.test_ground_truth_list = [[] for _ in range(self.n_user)]
+            for (u, i) in self.data:
+                self.test_ground_truth_list[u].append(i)
         return self.test_ground_truth_list
     
     def get_valid_ground_truth_list(self):
         return self.valid_ground_truth_list
-
