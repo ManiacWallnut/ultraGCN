@@ -46,7 +46,8 @@ def main(config_file,
          ii_neighbor_num: int,
          gamma: float,
          lambda_: float,
-         early_stop_metric: str='recall'):
+         early_stop_metric: str='recall',
+         tuning: bool=False):
     """
     Handle user arguments of UltraGCN
 
@@ -55,6 +56,7 @@ def main(config_file,
     :hyper_param gamma: adjust the relative importance of item-item relationship
     :hyper_param lambda_: adjust the relative importance of user-item relationship
     :hyper_param early_stop_metric: the metric used for early stopping
+    :hyper_param tuning: whether the model is in tuning mode
     """
 
     config = configparser.ConfigParser()
@@ -133,8 +135,12 @@ def main(config_file,
         hyper_param.update({'interacted_items': interacted_items, 
                             'mask': mask})
 
-        test_ground_truth_list = test_data.get_test_ground_truth_list()
-        hyper_param['test_ground_truth_list'] = test_ground_truth_list
+        if tuning:
+            valid_ground_truth_list = train_data.get_valid_ground_truth_list()
+            hyper_param['valid_ground_truth_list'] = valid_ground_truth_list
+        else:
+            test_ground_truth_list = test_data.get_test_ground_truth_list()
+            hyper_param['test_ground_truth_list'] = test_ground_truth_list
 
         best_epoch, best_metric = run_ultragcn(device=device, 
                                                train_data=train_data, 
