@@ -103,7 +103,7 @@ class UltraGCN(nn.Module):
         items = torch.arange(self.item_num).to(users.device)
         user_embeds = self.user_embeds(users)
         item_embeds = self.item_embeds(items)
-         
+        
         return user_embeds.mm(item_embeds.t())
 
     def get_device(self):
