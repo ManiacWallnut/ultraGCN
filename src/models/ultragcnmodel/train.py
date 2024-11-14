@@ -51,9 +51,6 @@ class UltraGCNTrainer:
         ultragcn = UltraGCN(hyper_param, constraint_mat, ii_constraint_mat, ii_neighbor_mat).to(self.device)
         optimizer = torch.optim.Adam(ultragcn.parameters(), lr=learning_rate)
 
-        # pbar = tqdm(range(hyper_param['epochs']), leave=False, colour='green', desc='epoch')
-
-        # for epoch in pbar:
         for epoch in range(hyper_param['max_epoch']):
             avg_loss = 0
             ultragcn.train()
@@ -129,16 +126,6 @@ class UltraGCNTrainer:
                     self.early_stop_count += 1
                     if self.early_stop_count >= hyper_param['early_stop_epoch']:
                         self.early_stop = True
-
-                # if Recall > self.best_recall:
-                #     self.best_recall, self.best_ndcg, self.recall_best_epoch = Recall, NDCG, epoch
-                #     self.early_stop_count = 0
-                #     torch.save(ultragcn.state_dict(), hyper_param['model_save_path'])
-
-                # else:
-                #     self.early_stop_count += 1
-                #     if self.early_stop_count >= hyper_param['early_stop_epoch']:
-                #         self.early_stop = True
             
             if self.early_stop:
                 print('##########################################')
@@ -151,7 +138,6 @@ class UltraGCNTrainer:
                 break
 
         writer.flush()
-        # pbar.close()
 
         print('Training end!')
 

@@ -108,7 +108,3 @@ class UltraGCN(nn.Module):
 
     def get_device(self):
         return self.user_embeds.weight.device
-
-    # def predict(self, features):
-    #     scores = self.linear(features)
-    #     return torch.nn.functional.softmax(scores, dim=1)
