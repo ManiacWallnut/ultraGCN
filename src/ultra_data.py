@@ -144,4 +144,8 @@ class UltraDataset(Dataset):
         return self.test_ground_truth_list
     
     def get_valid_ground_truth_list(self):
+        if self.train and not hasattr(self, 'valid_ground_truth_list'):
+            self.valid_ground_truth_list = [[] for _ in range(self.n_user)]
+            for (u, i) in self.data:
+                self.valid_ground_truth_list[u].append(i)
         return self.valid_ground_truth_list
