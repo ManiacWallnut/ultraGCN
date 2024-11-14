@@ -1,18 +1,22 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+# #!/usr/bin/env python
+# # -*- coding: utf-8 -*-
 
 import numpy as np
 import scipy.sparse as sp
 import torch
 from torch.utils.data import Dataset
 import warnings
+import random
+
 warnings.filterwarnings("ignore")
 
 class UltraDataset(Dataset):
-    def __init__(self, data_path, train=True):
+    def __init__(self, data_path, train=True, validation_split=0.1):
         # Initialize dataset parameters
         self.train = train
         self.data = []
+        self.train_data = []
+        self.valid_data = []
         self.n_user, self.m_item = 0, 0
         self.dataSize = 0
         self.constraint_mat = {}
@@ -23,6 +27,10 @@ class UltraDataset(Dataset):
 
         # Load data from the selected file
         self._load_data(file_path)
+
+        # Split into training and validation sets if in training mode
+        if self.train:
+            self._split_train_valid(validation_split)
 
     def _load_data(self, file_path):
         uniqueUsers, items, users = [], [], []
@@ -74,10 +82,40 @@ class UltraDataset(Dataset):
                 "beta_iD": torch.from_numpy(beta_iD).reshape(-1)
             }
 
+            self.mask = torch.zeros(self.n_user, self.m_item)
+
+            self.interacted_items = [[] for _ in range(self.n_user)]
+            for (u, i) in self.data:
+                self.mask[u][i] = -np.inf
+                self.interacted_items[u].append(i)
+            
+            self.valid_ground_truth_list = [[] for _ in range(self.n_user)]
+            for (u, i) in self.valid_data:
+                self.valid_ground_truth_list[u].append(i)
+
+            # For test data, also compute interacted_items and mask
+            if not self.train:
+                self.test_interacted_items = [[] for _ in range(self.n_user)]
+                for (u, i) in self.data:
+                    self.test_interacted_items[u].append(i)
+
+                self.test_ground_truth_list = [[] for _ in range(self.n_user)]
+                for (u, i) in self.valid_data:
+                    self.test_ground_truth_list[u].append(i)
+
+    def _split_train_valid(self, validation_split):
+        # Shuffle data and split 10% for validation
+        random.shuffle(self.data)
+        split_index = int(len(self.data) * (1 - validation_split))
+        self.train_data = self.data[:split_index]
+        self.valid_data = self.data[split_index:]
+
     def __len__(self):
-        return len(self.data)
+        return len(self.train_data) if self.train else len(self.data)
 
     def __getitem__(self, idx):
+        if self.train:
+            return self.train_data[idx]
         return self.data[idx]
 
     def get_train_matrix(self):
@@ -88,4 +126,19 @@ class UltraDataset(Dataset):
 
     def get_user_item_counts(self):
         return self.n_user, self.m_item
+
+    def get_validation_data(self):
+        return self.valid_data
+    
+    def get_interacted_items(self):
+        if self.train:
+            return self.interacted_items, self.mask
+        else:
+            return self.test_interacted_items, self.mask
+        
+    def get_test_ground_truth_list(self):
+        return self.test_ground_truth_list
+    
+    def get_valid_ground_truth_list(self):
+        return self.valid_ground_truth_list
 

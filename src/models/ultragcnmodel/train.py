@@ -16,16 +16,19 @@ from torch.utils.tensorboard import SummaryWriter
 class UltraGCNTrainer:
     def __init__(self, device):
         self.device = device
-        self.best_epoch, self.best_recall, self.best_ndcg = 0, 0, 0
+        self.recall_best_epoch,self.ndcg_best_epoch = 0, 0
+        self.best_recall, self.best_ndcg = 0, 0
+        self.best_metric = 0
         self.early_stop_count = 0
         self.early_stop = False
 
     def train_with_hyper_param(self, 
-                               train_data, 
+                               train_data,
                                hyper_param,
                                constraint_mat,
                                ii_constraint_mat,
-                               ii_neighbor_mat, 
+                               ii_neighbor_mat,
+                               early_stop_metric='recall', 
                                verbose=False):
 
         batch_size = hyper_param['batch_size']
@@ -57,8 +60,8 @@ class UltraGCNTrainer:
             start_time = time.time()
 
             # x: tensor:[users, pos_items]
-            # for batch, x in tqdm(train_loader, leave=False, colour='red', desc='batch'):
-            for batch, x in enumerate(train_loader):
+            for batch, x in tqdm(train_loader, leave=False, colour='red', desc='batch'):
+            # for batch, x in enumerate(train_loader):
                 users, pos_items, neg_items = self.Sampling(x,
                                                             hyper_param['item_num'],
                                                             hyper_param['negative_num'],
@@ -102,30 +105,48 @@ class UltraGCNTrainer:
                                                          hyper_param['topk'],
                                                          hyper_param['user_num'])
                 if hyper_param['enable_tensorboard']:
-                    writer.add_scalar('Results/recall@20', Recall, epoch)
-                    writer.add_scalar('Results/ndcg@20', NDCG, epoch)
+                    writer.add_scalar(f'Results/{early_stop_metric}@20', 
+                                      Recall if early_stop_metric == 'recall' else NDCG, 
+                                      epoch)
                 test_time = time.strftime('%H:%M:%S', time.gmtime(time.time() - start_time))
 
                 print('The time for epoch {} is: train time = {}, test time = {}'.format(epoch, train_time, test_time))
-                print("Loss = {:.5f}, F1-score: {:.5f} \t Precision: {:.5f}\t Recall: {:.5f}\tNDCG: {:.5f}".format(loss.item(), F1_score, Precision, Recall, NDCG))
+                print("Loss = {:.4f}, F1-score: {:.4f} \t Precision: {:.4f}\t Recall: {:.4f}\tNDCG: {:.4f}".format(loss.item(), F1_score, Precision, Recall, NDCG))
 
-                if Recall > self.best_recall:
-                    self.best_recall, self.best_ndcg, self.best_epoch = Recall, NDCG, epoch
+                if early_stop_metric == 'recall':
+                    metric = Recall
+                elif early_stop_metric == 'ndcg':
+                    metric = NDCG
+                else:
+                    raise ValueError('The given metric is not supported...')
+
+                if metric > self.best_metric:
+                    self.best_metric = metric
+                    self.best_epoch = epoch
                     self.early_stop_count = 0
                     torch.save(ultragcn.state_dict(), hyper_param['model_save_path'])
-
                 else:
                     self.early_stop_count += 1
                     if self.early_stop_count >= hyper_param['early_stop_epoch']:
                         self.early_stop = True
+
+                # if Recall > self.best_recall:
+                #     self.best_recall, self.best_ndcg, self.recall_best_epoch = Recall, NDCG, epoch
+                #     self.early_stop_count = 0
+                #     torch.save(ultragcn.state_dict(), hyper_param['model_save_path'])
+
+                # else:
+                #     self.early_stop_count += 1
+                #     if self.early_stop_count >= hyper_param['early_stop_epoch']:
+                #         self.early_stop = True
             
             if self.early_stop:
                 print('##########################################')
                 print('Early stop is triggered at {} epochs.'.format(epoch))
                 print('Results:')
-                print('best epoch = {}, best recall = {}, best ndcg = {}'.format(self.best_epoch, 
-                                                                                 self.best_recall, 
-                                                                                 self.best_ndcg))
+                print('best epoch = {}, best {} = {}'.format(self.best_epoch, 
+                                                             self.best_recall if early_stop_metric == 'recall' else self.best_ndcg,
+                                                             self.best_metric))
                 print('The best model is saved at {}'.format(hyper_param['model_save_path']))
                 break
 
@@ -134,7 +155,7 @@ class UltraGCNTrainer:
 
         print('Training end!')
 
-        return self.best_epoch, self.best_recall, self.best_ndcg
+        return self.best_epoch, self.best_metric
 
     def Sampling(self,
                  pos_train_data, 
