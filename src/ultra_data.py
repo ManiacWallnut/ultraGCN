@@ -94,8 +94,8 @@ class UltraDataset(Dataset):
                 self.valid_ground_truth_list[u].append(i)
 
             # For test data, also compute interacted_items and mask
+            self.test_interacted_items = [[] for _ in range(self.n_user)]
             if not self.train:
-                self.test_interacted_items = [[] for _ in range(self.n_user)]
                 for (u, i) in self.data:
                     self.test_interacted_items[u].append(i)
 
