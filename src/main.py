@@ -129,22 +129,13 @@ def main(config_file,
             pstore(ii_neighbor_mat, '../{}_ii_neighbor_mat'.format(dataset))
             pstore(ii_constraint_mat, '../{}_ii_constraint_mat'.format(dataset))
 
-        # mask = torch.zeros(user_num, item_num)
-        # interacted_items = [[] for _ in range(user_num)]
-        # for (u, i) in train_data:
-        #     mask[u][i] = -np.inf
-        #     interacted_items[u].append(i)
         interacted_items, mask = train_data.get_interacted_items()
         hyper_param.update({'interacted_items': interacted_items, 
                             'mask': mask})
 
-        # test_ground_truth_list = [[] for _ in range(user_num)]
-        # for (u, i) in test_data:
-        #     test_ground_truth_list[u].append(i)
         test_ground_truth_list = test_data.get_test_ground_truth_list()
         hyper_param['test_ground_truth_list'] = test_ground_truth_list
 
-        # log_param(hyper_param)
         best_epoch, best_metric = run_ultragcn(device=device, 
                                                           train_data=train_data, 
                                                           hyper_param=hyper_param, 
