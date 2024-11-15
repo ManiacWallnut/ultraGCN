@@ -76,7 +76,6 @@ def main(config_file,
     log_param(hyper_param)
 
     dataset = config['Training']['dataset']
-    hyper_param['dataset'] = dataset
     data_path = config['Training']['file_path']
     
     if hyper_param['model'] == 'mymodel':
@@ -100,6 +99,7 @@ def main(config_file,
         user_num, item_num = train_data.get_user_item_counts()
         constraint_mat = train_data.get_constraint_matrix()
         hyper_param = {
+            'dataset': dataset,
             'user_num': user_num,
             'item_num': item_num,
             'batch_size': config.getint('Training', 'batch_size'),
