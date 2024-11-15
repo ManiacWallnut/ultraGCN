@@ -137,8 +137,12 @@ class UltraGCNTrainer:
                 gamma_val = hyper_param['gamma']
                 if early_stop_metric == 'recall':
                     recall_val = Recall
+                else:
+                    recall_val = 0
                 if early_stop_metric == 'ndcg':
                     ndcg_val = NDCG
+                else:
+                    ndcg_val = 0
 
                 row = [
                     dataset_name,
