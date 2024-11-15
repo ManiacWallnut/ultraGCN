@@ -133,8 +133,9 @@ class UltraGCNTrainer:
                 print('##########################################')
                 print('Early stop is triggered at {} epochs.'.format(epoch))
                 print('Results:')
+                tested_metric = 'Recall' if early_stop_metric == 'recall' else 'NDCG'
                 print('best epoch = {}, best {} = {}'.format(self.best_epoch, 
-                                                             early_stop_metric,
+                                                             tested_metric,
                                                              self.best_metric))
                 print('The best model is saved at {}'.format(hyper_param['model_save_path']))
 
