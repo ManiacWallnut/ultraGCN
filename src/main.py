@@ -76,6 +76,7 @@ def main(config_file,
     log_param(hyper_param)
 
     dataset = config['Training']['dataset']
+    hyper_param['dataset'] = dataset
     data_path = config['Training']['file_path']
     
     if hyper_param['model'] == 'mymodel':
