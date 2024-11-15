@@ -8,6 +8,7 @@ from utils import log_param
 from loguru import logger
 import time
 import numpy as np
+import csv
 
 from models.ultragcnmodel.eval import test
 from torch.utils.tensorboard import SummaryWriter
@@ -133,9 +134,62 @@ class UltraGCNTrainer:
                 print('Early stop is triggered at {} epochs.'.format(epoch))
                 print('Results:')
                 print('best epoch = {}, best {} = {}'.format(self.best_epoch, 
-                                                             self.best_recall if early_stop_metric == 'recall' else self.best_ndcg,
+                                                             early_stop_metric,
                                                              self.best_metric))
                 print('The best model is saved at {}'.format(hyper_param['model_save_path']))
+
+                csv_path = '../csv/exp_param.csv'.format()
+                print('The results will save to {}'.format(csv_path))
+                header = [
+                    "Dataset",
+                    "No"
+                    "Item-Item N",
+                    "Lambda",
+                    "Gamma",
+                    "Recall@20 Validation",
+                    "Recall@20 Test",
+                    "NDCG@20 Validation",
+                    "NDCG@20 Test"
+                ]
+
+                dataset_name = hyper_param['dataset']
+                if not os.path.exists(csv_path):
+                    experiment_no = 1
+                with open(csv_path, mode='r', encoding='utf-8') as file:
+                    experiment_no = sum(1 for _ in file)
+                item_item_n = hyper_param['ii_neighbor_num']
+                lambda_val = hyper_param['lambda']
+                gamma_val = hyper_param['gamma']
+                if early_stop_metric == 'recall':
+                    recall_val = self.best_metric
+                if early_stop_metric == 'ndcg':
+                    ndcg_val = self.best_metric
+
+                row = [
+                    dataset_name,
+                    experiment_no,
+                    item_item_n,
+                    lambda_val,
+                    gamma_val,
+                    recall_val,
+                    ndcg_val
+                ]
+
+                # Write to CSV
+                try:
+                    # Check if the file exists
+                    file_exists = os.path.exists(csv_path)
+                    with open(csv_path, 
+                              mode='a', 
+                              newline='', 
+                              encoding='utf-8') as file:
+                        writer = csv.writer(file)
+                        if not file_exists:
+                            writer.writerow(header)
+                        writer.writerow(row)
+                    print(f'Results saved to {csv_path}')
+                except Exception as e:
+                    print(f'Error saving results to {csv_path}: {e}')
                 break
 
         writer.flush()
