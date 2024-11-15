@@ -162,10 +162,10 @@ class UltraGCNTrainer:
                               mode='a', 
                               newline='', 
                               encoding='utf-8') as file:
-                        writer = csv.writer(file)
+                        csv_writer = csv.writer(file)
                         if not file_exists:
                             writer.writerow(header)
-                        writer.writerow(row)
+                        csv_writer.writerow(row)
                     print(f'Results saved to {csv_path}')
                 except Exception as e:
                     print(f'Error saving results to {csv_path}: {e}')
@@ -242,10 +242,10 @@ class UltraGCNTrainer:
                               mode='a', 
                               newline='', 
                               encoding='utf-8') as file:
-                        writer = csv.writer(file)
+                        csv_writer = csv.writer(file)
                         if not file_exists:
                             writer.writerow(header)
-                        writer.writerow(row)
+                        csv_writer.writerow(row)
                     print(f'Results saved to {csv_path}')
                 except Exception as e:
                     print(f'Error saving results to {csv_path}: {e}')
