@@ -35,14 +35,14 @@ def run_ultragcn(device,
                  ii_neighbor_mat,
                  early_stop_metric):
     trainer = UltraGCNTrainer(device)
-    best_epoch, best_metric = trainer.train_with_hyper_param(train_data=train_data, 
+    best_epoch, best_metric, model = trainer.train_with_hyper_param(train_data=train_data, 
                                                              hyper_param=hyper_param, 
                                                              constraint_mat=constraint_mat,
                                                              ii_constraint_mat=ii_constraint_mat, 
                                                              ii_neighbor_mat=ii_neighbor_mat, 
                                                              early_stop_metric=early_stop_metric,
                                                              verbose=True)
-    return best_epoch, best_metric
+    return best_epoch, best_metric, model
 
 def main(config_file,
          ii_neighbor_num: int,
