@@ -85,11 +85,11 @@ class UltraDataset(Dataset):
                 self.interacted_items[u].append(i)
 
     def __len__(self):
-        return len(self.train_data) if self.train else len(self.data)
+        return len(self.data)
 
     def __getitem__(self, idx):
         if self.train:
-            return self.train_data[idx]
+            return self.data[idx]
         return self.data[idx]
 
     def get_train_matrix(self):
@@ -102,10 +102,7 @@ class UltraDataset(Dataset):
         return self.n_user, self.m_item
 
     def get_interacted_items(self):
-        if self.train:
-            return self.interacted_items, self.mask
-        else:
-            return self.test_interacted_items, self.mask
+        return self.interacted_items, self.mask
 
     def get_test_ground_truth_list(self):
         if not self.train and not hasattr(self, 'test_ground_truth_list'):
