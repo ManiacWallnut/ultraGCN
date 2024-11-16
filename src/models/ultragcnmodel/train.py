@@ -111,64 +111,6 @@ class UltraGCNTrainer:
 
                 print('The time for epoch {} is: train time = {}, test time = {}'.format(epoch, train_time, test_time))
                 print("Loss = {:.4f}, F1-score: {:.4f} \t Precision: {:.4f}\t Recall: {:.4f}\tNDCG: {:.4f}".format(loss.item(), F1_score, Precision, Recall, NDCG))
-                # print("Loss = {}, F1-score: {} \t Precision: {}\t Recall: {}\tNDCG: {}".format(loss.item(), F1_score, Precision, Recall, NDCG))
-
-                # csv_path = '../csv/exp_param.csv'.format()
-                # print('The results will save to {}'.format(csv_path))
-                # header = [
-                #     "Dataset",
-                #     "No"
-                #     "Item-Item N",
-                #     "Lambda",
-                #     "Gamma",
-                #     "Recall@20 Validation",
-                #     "Recall@20 Test",
-                #     "NDCG@20 Validation",
-                #     "NDCG@20 Test"
-                # ]
-
-                # dataset_name = hyper_param['dataset']
-                # if not os.path.exists(csv_path):
-                #     experiment_no = 1
-                # with open(csv_path, mode='r', encoding='utf-8') as file:
-                #     experiment_no = sum(1 for _ in file)
-                # item_item_n = hyper_param['ii_neighbor_num']
-                # lambda_val = hyper_param['lambda']
-                # gamma_val = hyper_param['gamma']
-                # if early_stop_metric == 'recall':
-                #     recall_val = Recall
-                # else:
-                #     recall_val = 0
-                # if early_stop_metric == 'ndcg':
-                #     ndcg_val = NDCG
-                # else:
-                #     ndcg_val = 0
-
-                # row = [
-                #     dataset_name,
-                #     experiment_no,
-                #     item_item_n,
-                #     lambda_val,
-                #     gamma_val,
-                #     recall_val,
-                #     ndcg_val
-                # ]
-
-                # # Write to CSV
-                # try:
-                #     # Check if the file exists
-                #     file_exists = os.path.exists(csv_path)
-                #     with open(csv_path, 
-                #               mode='a', 
-                #               newline='', 
-                #               encoding='utf-8') as file:
-                #         csv_writer = csv.writer(file)
-                #         if not file_exists:
-                #             writer.writerow(header)
-                #         csv_writer.writerow(row)
-                #     print(f'Results saved to {csv_path}')
-                # except Exception as e:
-                #     print(f'Error saving results to {csv_path}: {e}')
 
                 if early_stop_metric == 'recall':
                     metric = Recall
@@ -181,10 +123,11 @@ class UltraGCNTrainer:
                     self.best_metric = metric
                     self.best_epoch = epoch
                     self.early_stop_count = 0
-                    torch.save(ultragcn.state_dict(), hyper_param['model_save_path'])
+                    # torch.save(ultragcn.state_dict(), hyper_param['model_save_path'])
                 else:
                     self.early_stop_count += 1
                     if self.early_stop_count >= hyper_param['early_stop_epoch']:
+
                         self.early_stop = True
             
             if self.early_stop:
@@ -192,10 +135,10 @@ class UltraGCNTrainer:
                 print('Early stop is triggered at {} epochs.'.format(epoch))
                 print('Results:')
                 tested_metric = 'Recall' if early_stop_metric == 'recall' else 'NDCG'
-                print('best epoch = {}, best {} = {}'.format(self.best_epoch, 
+                print('best epoch = {}, best {} = {:.4f}'.format(self.best_epoch, 
                                                              tested_metric,
                                                              self.best_metric))
-                print('The best model is saved at {}'.format(hyper_param['model_save_path']))
+                # print('The best model is saved at {}'.format(hyper_param['model_save_path']))
 
                 csv_path = '../csv/exp_param.csv'.format()
                 print('The results will save to {}'.format(csv_path))
@@ -206,9 +149,7 @@ class UltraGCNTrainer:
                     "Lambda",
                     "Gamma",
                     "Recall@20 Validation",
-                    "Recall@20 Test",
                     "NDCG@20 Validation",
-                    "NDCG@20 Test"
                 ]
 
                 dataset_name = hyper_param['dataset']
@@ -247,8 +188,8 @@ class UltraGCNTrainer:
                               newline='', 
                               encoding='utf-8') as file:
                         csv_writer = csv.writer(file)
-                        if not file_exists:
-                            writer.writerow(header)
+                        if not file_exists or os.stat(csv_path).st_size == 0:
+                            csv_writer.writerow(header)
                         csv_writer.writerow(row)
                     print(f'Results saved to {csv_path}')
                 except Exception as e:
@@ -259,7 +200,7 @@ class UltraGCNTrainer:
 
         print('Training end!')
 
-        return self.best_epoch, self.best_metric
+        return self.best_epoch, self.best_metric, ultragcn
 
     def Sampling(self,
                  pos_train_data, 
