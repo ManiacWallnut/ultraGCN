@@ -99,14 +99,14 @@ def main(config_file,
 
     elif hyper_param['model'] == 'ultragcn':
         if tuning:
-            tuning_train_path = '../datasets/AmazonBook_m1/tuning_train.txt'
+            tuning_train_path = '../datasets/AmazonBooks_m1/tuning_train.txt'
             train_data = UltraDataset(data_path=tuning_train_path, train=True)
-            tuning_validate_path = '../datasets/AmazonBook_m1/tuning_validate.txt'
+            tuning_validate_path = '../datasets/AmazonBooks_m1/tuning_validate.txt'
             test_data = UltraDataset(data_path=tuning_validate_path, train=False)
         else:
-            train_path = '../datasets/AmazonBook_m1/train.txt'
+            train_path = '../datasets/AmazonBooks_m1/train.txt'
             train_data = UltraDataset(data_path=train_path, train=True)
-            test_path = '../datasets/AmazonBook_m1/test.txt'
+            test_path = '../datasets/AmazonBooks_m1/test.txt'
             test_data = UltraDataset(data_path=test_path, train=False)
 
         # train_data = UltraDataset(data_path=data_path, train=True)
@@ -170,7 +170,7 @@ def main(config_file,
     
     logger.info("The model has been trained. The best_epoch is {}, The best_metric is {}.".format(best_epoch, best_metric))
     # test
-    final_test_data_path = '../datasets/AmazonBook_m1/test.txt'
+    final_test_data_path = '../datasets/AmazonBooks_m1/test.txt'
     final_test_data = UltraDataset(data_path=final_test_data_path, train=False)
     final_test_ground_truth_list = final_test_data.get_test_ground_truth_list()
     test_loader = torch.utils.data.DataLoader(list(range(hyper_param['user_num'])),
