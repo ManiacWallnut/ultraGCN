@@ -80,7 +80,7 @@ class UltraDataset(Dataset):
             # Initialize mask and interacted items for training
             self.mask = torch.zeros(self.n_user, self.m_item)
             self.interacted_items = [[] for _ in range(self.n_user)]
-            for (u, i) in self.train_data:
+            for (u, i) in self.data:
                 self.mask[u][i] = -np.inf
                 self.interacted_items[u].append(i)
 
