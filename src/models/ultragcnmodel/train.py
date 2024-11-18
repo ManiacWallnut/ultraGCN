@@ -30,8 +30,7 @@ class UltraGCNTrainer:
                                constraint_mat,
                                ii_constraint_mat,
                                ii_neighbor_mat,
-                               early_stop_metric='recall', 
-                               verbose=False):
+                               early_stop_metric='recall'):
 
         batch_size = hyper_param['batch_size']
         epochs = hyper_param['max_epoch']
@@ -59,7 +58,6 @@ class UltraGCNTrainer:
             start_time = time.time()
 
             # x: tensor:[users, pos_items]
-            # for batch, x in tqdm(train_loader, leave=False, colour='red', desc='batch'):
             for batch, x in enumerate(train_loader):
                 users, pos_items, neg_items = self.Sampling(x,
                                                             hyper_param['item_num'],
@@ -82,9 +80,6 @@ class UltraGCNTrainer:
             train_time = time.strftime('%H:%M:%S', time.gmtime(time.time() - start_time))
             if hyper_param['enable_tensorboard']:
                 writer.add_scalar('Loss/train', loss, epoch)
-
-            # if verbose:
-            #     pbar.write('Epoch {:02}: {:.4} training loss'.format(epoch, loss.item()))
 
             need_test = True
             if epoch < 50 and epoch % 5 != 0:

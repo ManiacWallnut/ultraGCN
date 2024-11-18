@@ -40,8 +40,7 @@ def run_ultragcn(device,
                                                              constraint_mat=constraint_mat,
                                                              ii_constraint_mat=ii_constraint_mat, 
                                                              ii_neighbor_mat=ii_neighbor_mat, 
-                                                             early_stop_metric=early_stop_metric,
-                                                             verbose=True)
+                                                             early_stop_metric=early_stop_metric)
     return best_epoch, best_metric, model
 
 def main(config_file,
@@ -131,8 +130,8 @@ def main(config_file,
             'w2': config.getfloat('Training', 'w2'),
             'w3': config.getfloat('Training', 'w3'),
             'w4': config.getfloat('Training', 'w4'),
-            'negative_num': config.getint('Training', 'negative_num'), # 안 맞을 가능성
-            'negative_weight': config.getfloat('Training', 'negative_weight'), # 안 맞을 가능성
+            'negative_num': config.getint('Training', 'negative_num'), 
+            'negative_weight': config.getfloat('Training', 'negative_weight'), 
             'gamma': gamma,
             'lambda': lambda_,
             'sampling_sift_pos': config.getboolean('Training', 'sampling_sift_pos'),
@@ -169,6 +168,7 @@ def main(config_file,
         return
     
     logger.info("The model has been trained. The best_epoch is {}, The best_metric is {}.".format(best_epoch, best_metric))
+
     # test
     final_test_data_path = '../datasets/AmazonBooks_m1/test.txt'
     final_test_data = UltraDataset(data_path=final_test_data_path, train=False)

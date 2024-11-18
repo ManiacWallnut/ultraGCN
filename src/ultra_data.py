@@ -21,7 +21,6 @@ class UltraDataset(Dataset):
         self.train_mat = None
 
         # Define file paths based on `train` flag
-        # file_path = f"{data_path}/{'train.txt' if train else 'test.txt'}"
         file_path = data_path
 
         # Load data from the selected file
