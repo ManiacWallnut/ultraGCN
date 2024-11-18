@@ -138,20 +138,18 @@ class UltraGCNTrainer:
                 csv_path = '../csv/exp_param.csv'.format()
                 print('The results will save to {}'.format(csv_path))
                 header = [
-                    "Dataset",
-                    "No"
-                    "Item-Item N",
-                    "Lambda",
-                    "Gamma",
+                    "ii_neighbor_num",
+                    "gamma",
+                    "lambda",
                     "Recall@20 Validation",
-                    "NDCG@20 Validation",
+                    "NDCG@20 Validation"
                 ]
 
-                dataset_name = hyper_param['dataset']
-                if not os.path.exists(csv_path):
-                    experiment_no = 1
-                with open(csv_path, mode='r', encoding='utf-8') as file:
-                    experiment_no = sum(1 for _ in file)
+                # dataset_name = hyper_param['dataset']
+                # if not os.path.exists(csv_path):
+                #     experiment_no = 1
+                # with open(csv_path, mode='r', encoding='utf-8') as file:
+                #     experiment_no = sum(1 for _ in file)
                 item_item_n = hyper_param['ii_neighbor_num']
                 lambda_val = hyper_param['lambda']
                 gamma_val = hyper_param['gamma']
@@ -165,8 +163,6 @@ class UltraGCNTrainer:
                     ndcg_val = 0
 
                 row = [
-                    dataset_name,
-                    experiment_no,
                     item_item_n,
                     lambda_val,
                     gamma_val,

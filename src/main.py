@@ -211,11 +211,14 @@ def main(config_file,
 
     try:
         file_exists = os.path.isfile(final_csv_path)
-        with open(final_csv_path, 'a', '', 'utf-8') as f:
-            writer = csv.writer(f)
+        with open(final_csv_path, 
+                  mode='a', 
+                  newline='', 
+                  encoding='utf-8') as f:
+            test_csv_writer = csv.writer(f)
             if not file_exists or os.stat(final_csv_path).st_size == 0:
-                writer.writerow(header)
-            writer.writerow(row)
+                test_csv_writer.writerow(header)
+            test_csv_writer.writerow(row)
     except Exception as e:
         print(e)
 

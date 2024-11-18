@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -J hello_slurm
 #SBATCH --gres=gpu:1
-#SBATCH -o /home/sunuk/Research/UltraGCN/slurm_log/tmep.out
+#SBATCH -o /home/sunuk/Research/UltraGCN/slurm_log/lambda.out
 hostname
 #conda activate UltraGCN
 
