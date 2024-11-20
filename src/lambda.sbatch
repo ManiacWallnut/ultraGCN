@@ -6,7 +6,7 @@ hostname
 #conda activate UltraGCN
 
 # 데이터셋 목록을 배열로 정의
-lambda=(0.2 0.4 0.6 0.8 1 1.2 1.4)
+lambda=(0.1 0.5 1 1.5 2 2.5 3 3.5)
 
 # 각 데이터셋에 대해 실험을 반복
 for lambda in "${lambda[@]}"
