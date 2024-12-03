@@ -39,8 +39,8 @@ class UltraGCNTrainer:
         train_loader = torch.utils.data.DataLoader(train_data,
                                                    batch_size=batch_size,
                                                    shuffle=True,
-                                                   num_workers=5)
-        
+                                                   num_workers=0)
+        print('Total training samples = {}'.format(len(train_loader.dataset)))
         batches = len(train_loader.dataset) // hyper_param['batch_size']
         if len(train_loader.dataset) % hyper_param['batch_size'] != 0:
             batches += 1

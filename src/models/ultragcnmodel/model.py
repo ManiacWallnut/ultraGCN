@@ -5,7 +5,13 @@ import torch
 import torch.nn.functional as F
 import torch.nn as nn
 
-
+def move_dict_to_device(d, device):
+    if type(d) is not dict:
+        return d.to(device)
+    for key, value in d.items():
+        if isinstance(value, torch.Tensor):
+            d[key] = value.to(device)
+    return d
 class UltraGCN(nn.Module):
     def __init__(self, params, constraint_mat, ii_constraint_mat, ii_neighbor_mat):
         super(UltraGCN, self).__init__()
@@ -21,12 +27,12 @@ class UltraGCN(nn.Module):
         self.gamma = params['gamma']
         self.lambda_ = params['lambda']
 
-        self.user_embeds = nn.Embedding(self.user_num, self.embedding_dim)
-        self.item_embeds = nn.Embedding(self.item_num, self.embedding_dim)
-
-        self.constraint_mat = constraint_mat
-        self.ii_constraint_mat = ii_constraint_mat
-        self.ii_neighbor_mat = ii_neighbor_mat
+        self.user_embeds = nn.Embedding(self.user_num, self.embedding_dim).to('cuda')
+        self.item_embeds = nn.Embedding(self.item_num, self.embedding_dim).to('cuda')
+        device = torch.device('cuda:0')
+        self.constraint_mat = move_dict_to_device(constraint_mat, device)
+        self.ii_constraint_mat = move_dict_to_device(ii_constraint_mat, device)
+        self.ii_neighbor_mat = move_dict_to_device(ii_neighbor_mat, device)
 
         self.initial_weight = params['initial_weight']
         self.initial_weights()
@@ -37,15 +43,16 @@ class UltraGCN(nn.Module):
 
     def get_omegas(self, users, pos_items, neg_items):
         device = self.get_device()
+        
         if self.w2 > 0:
-            pos_weight = torch.mul(self.constraint_mat['beta_uD'][users.cpu()], self.constraint_mat['beta_iD'][pos_items.cpu()]).to(device)
+            pos_weight = torch.mul(self.constraint_mat['beta_uD'][users], self.constraint_mat['beta_iD'][pos_items]).to(device)
             pos_weight = self.w1 + self.w2 * pos_weight
         else:
             pos_weight = self.w1 * torch.ones(len(pos_items)).to(device)
         
         # users = (users * self.item_num).unsqueeze(0)
         if self.w4 > 0:
-            neg_weight = torch.mul(torch.repeat_interleave(self.constraint_mat['beta_uD'][users.cpu()], neg_items.size(1)), self.constraint_mat['beta_iD'][neg_items.cpu().flatten()]).to(device)
+            neg_weight = torch.mul(torch.repeat_interleave(self.constraint_mat['beta_uD'][users], neg_items.size(1)), self.constraint_mat['beta_iD'][neg_items.flatten()]).to(device)
             neg_weight = self.w3 + self.w4 * neg_weight
         else:
             neg_weight = self.w3 * torch.ones(neg_items.size(0) * neg_items.size(1)).to(device)

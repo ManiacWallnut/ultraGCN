@@ -59,16 +59,21 @@ def main(config_file,
     :hyper_param early_stop_metric: the metric used for early stopping
     :hyper_param tuning: whether the model is in tuning mode
     """
-
+    print('start')
     config = configparser.ConfigParser()
     config.read(config_file)
 
     logger.info("The main procedure has started with the following parameters:")
+    print(config_file)
     gpu = config['Training']['gpu']
     device = torch.device('cuda:'+gpu if torch.cuda.is_available() else 'cpu')
     seed = config.getint('Training', 'seed')
     set_random_seed(seed=seed, device=device)
-
+    for section in config.sections():
+        print(f"[{section}]")
+        for key, value in config.items(section):
+            print(f"{key} = {value}")
+        print()
     hyper_param = {
         'model': config['Model']['model'],
         'seed': seed,
@@ -98,14 +103,14 @@ def main(config_file,
 
     elif hyper_param['model'] == 'ultragcn':
         if tuning:
-            tuning_train_path = '../datasets/AmazonBooks_m1/tuning_train.txt'
+            tuning_train_path = os.path.join(data_path, 'tuning_train.txt')
             train_data = UltraDataset(data_path=tuning_train_path, train=True)
-            tuning_validate_path = '../datasets/AmazonBooks_m1/tuning_validate.txt'
+            tuning_validate_path = os.path.join(data_path, 'tuning_validate.txt')
             test_data = UltraDataset(data_path=tuning_validate_path, train=False)
         else:
-            train_path = '../datasets/AmazonBooks_m1/train.txt'
+            train_path = os.path.join(data_path, 'train.txt')
             train_data = UltraDataset(data_path=train_path, train=True)
-            test_path = '../datasets/AmazonBooks_m1/test.txt'
+            test_path = os.path.join(data_path, 'test.txt')
             test_data = UltraDataset(data_path=test_path, train=False)
 
         # train_data = UltraDataset(data_path=data_path, train=True)
@@ -170,7 +175,7 @@ def main(config_file,
     logger.info("The model has been trained. The best_epoch is {}, The best_metric is {}.".format(best_epoch, best_metric))
 
     # test
-    final_test_data_path = '../datasets/AmazonBooks_m1/test.txt'
+    final_test_data_path = os.path.join(data_path, 'test.txt')
     final_test_data = UltraDataset(data_path=final_test_data_path, train=False)
     final_test_ground_truth_list = final_test_data.get_test_ground_truth_list()
     test_loader = torch.utils.data.DataLoader(list(range(hyper_param['user_num'])),
@@ -188,7 +193,7 @@ def main(config_file,
     print('Hyper-param with ii_neighbor_num: {}, gamma: {}, lambda: {}'.format(ii_neighbor_num, gamma, lambda_))
     print('F1_score: {:.4f}, Precision: {:.4f}, Recall: {:.4f}, NDCG: {:.4f}'.format(F1_score, Precision, Recall, NDCG))
 
-    final_csv_path = '../csv/test_score.csv'
+    final_csv_path = f'../csv/{dataset}_test_score.csv'
     if not os.path.exists(final_csv_path):
         with open(final_csv_path, 'w') as f:
             f.write('ii_neighbor_num, gamma, lambda, Recall, NDCG\n')

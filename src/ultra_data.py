@@ -57,7 +57,19 @@ class UltraDataset(Dataset):
 
         # Populate self.data with user-item pairs
         self.data = list(zip(users, items))
+        # Print dataset information
+        num_interactions = len(self.data)
+        density = num_interactions / (self.n_user * self.m_item)
+        user_interaction_counts = np.zeros(self.n_user, dtype=int)
+        for u, _ in self.data:
+            user_interaction_counts[u] += 1
+        interaction_distribution = np.bincount(user_interaction_counts)
 
+        print(f"#user: {self.n_user}")
+        print(f"#item: {self.m_item}")
+        print(f"#interaction: {num_interactions}")
+        print(f"#density: {density:.6f}")
+        print(f"Interaction distribution: {interaction_distribution.tolist()}")
         # Create sparse matrix if in training mode
         if self.train:
             self.train_mat = sp.dok_matrix((self.n_user, self.m_item), dtype=np.float32)
